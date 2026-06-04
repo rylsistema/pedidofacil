@@ -1,238 +1,211 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pedido Fácil</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body {
-      background: #f3f4f6;
-    }
-
-    .card {
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Fácil</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{background:#f3f4f6}
+.card{box-shadow:0 10px 25px rgba(0,0,0,.08)}
+</style>
 </head>
-
 <body class="min-h-screen flex justify-center p-5">
 
-  <div class="w-full max-w-2xl bg-white rounded-3xl p-6 card">
+<div class="w-full max-w-4xl bg-white rounded-3xl p-6 card">
 
-    <h1 class="text-3xl font-bold text-center mb-1">
-      Pedido Fácil
-    </h1>
+<h1 class="text-3xl font-bold text-center mb-2">Pedido Fácil</h1>
+<p class="text-center text-gray-500 mb-6">Bloco de pedido digital</p>
 
-    <p class="text-center text-gray-500 mb-8">
-      Bloco de pedido digital
-    </p>
-
-    <!-- CLIENTE -->
-    <div class="mb-6">
-      <label class="font-semibold block mb-2">
-        Cliente
-      </label>
-
-      <input
-        id="cliente"
-        type="text"
-        placeholder="Nome do cliente"
-        class="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-400"
-      />
-    </div>
-
-    <!-- PRODUTOS -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
-
-      <input
-        id="produto"
-        type="text"
-        placeholder="Produto"
-        class="border rounded-xl p-3 outline-none"
-      />
-
-      <input
-        id="quantidade"
-        type="number"
-        placeholder="Qtd"
-        class="border rounded-xl p-3 outline-none"
-      />
-
-      <input
-        id="valor"
-        type="number"
-        step="0.01"
-        placeholder="Valor"
-        class="border rounded-xl p-3 outline-none"
-      />
-
-      <button
-        onclick="adicionarProduto()"
-        class="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-3 font-semibold"
-      >
-        Adicionar
-      </button>
-
-    </div>
-
-    <!-- TABELA -->
-    <div class="overflow-auto">
-
-      <table class="w-full mb-6">
-
-        <thead>
-          <tr class="border-b">
-            <th class="text-left p-2">Produto</th>
-            <th class="text-center p-2">Qtd</th>
-            <th class="text-right p-2">Valor</th>
-            <th class="text-right p-2">Total</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody id="tabelaPedidos"></tbody>
-
-      </table>
-
-    </div>
-
-    <!-- TOTAL -->
-    <div class="flex justify-end mb-6">
-
-      <div class="bg-gray-100 rounded-2xl px-6 py-4">
-
-        <p class="text-gray-500 text-sm">
-          Total do Pedido
-        </p>
-
-        <h2 id="totalPedido" class="text-3xl font-bold">
-          R$ 0,00
-        </h2>
-
-      </div>
-
-    </div>
-
-    <!-- BOTÕES -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-
-      <button
-        onclick="compartilharWhatsApp()"
-        class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl font-bold"
-      >
-        Compartilhar WhatsApp
-      </button>
-
-      <button
-        onclick="window.print()"
-        class="bg-gray-800 hover:bg-gray-900 text-white p-4 rounded-2xl font-bold"
-      >
-        Gerar PDF
-      </button>
-
-    </div>
-
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+  <div>
+    <label class="font-semibold block mb-2">Nº Pedido</label>
+    <input id="numeroPedido" type="text" placeholder="Digite o número"
+      class="w-full border rounded-xl p-3 outline-none">
   </div>
 
-  <script>
+  <div>
+    <label class="font-semibold block mb-2">Data</label>
+    <input id="dataPedido" type="date"
+      class="w-full border rounded-xl p-3 outline-none">
+  </div>
+</div>
 
-    let pedidos = [];
+<div class="mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+    <div>
+      <label class="font-semibold block mb-2">Cód.</label>
+      <input id="codigoCliente" type="text" placeholder="Código"
+      class="w-full border rounded-xl p-3 outline-none">
+    </div>
 
-    function adicionarProduto() {
+    <div class="md:col-span-3">
+      <label class="font-semibold block mb-2">Cliente</label>
+      <input id="cliente" type="text" placeholder="Nome do cliente"
+      class="w-full border rounded-xl p-3 outline-none">
+    </div>
+  </div>
+</div>
 
-      const produto = document.getElementById("produto").value;
-      const quantidade = parseFloat(document.getElementById("quantidade").value);
-      const valor = parseFloat(document.getElementById("valor").value);
+<div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+  <input id="codigoProduto" type="text" placeholder="Cód."
+  class="border rounded-xl p-3 outline-none">
 
-      if (!produto || !quantidade || !valor) {
-        alert("Preencha todos os campos.");
-        return;
-      }
+  <input id="produto" type="text" placeholder="Produto"
+  class="border rounded-xl p-3 outline-none">
 
-      pedidos.push({
-        produto,
-        quantidade,
-        valor,
-        total: quantidade * valor
-      });
+  <input id="quantidade" type="number" placeholder="Qtd"
+  class="border rounded-xl p-3 outline-none">
 
-      atualizarTabela();
+  <input id="valor" type="number" step="0.01" placeholder="Valor Unit."
+  class="border rounded-xl p-3 outline-none">
 
-      document.getElementById("produto").value = "";
-      document.getElementById("quantidade").value = "";
-      document.getElementById("valor").value = "";
-    }
+  <button onclick="adicionarProduto()"
+  class="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-3 font-semibold">
+  Adicionar
+  </button>
+</div>
 
-    function atualizarTabela() {
+<div class="overflow-auto">
+<table class="w-full mb-6">
+<thead>
+<tr class="border-b">
+<th class="text-left p-2">Cód.</th>
+<th class="text-left p-2">Produto</th>
+<th class="text-center p-2">Qtd</th>
+<th class="text-right p-2">Valor Unit.</th>
+<th class="text-right p-2">Total</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="tabelaPedidos"></tbody>
+</table>
+</div>
 
-      const tabela = document.getElementById("tabelaPedidos");
+<div class="flex justify-end mb-6">
+<div class="bg-gray-100 rounded-2xl px-6 py-4">
+<p class="text-gray-500 text-sm">Total do Pedido</p>
+<h2 id="totalPedido" class="text-3xl font-bold">R$ 0,00</h2>
+</div>
+</div>
 
-      tabela.innerHTML = "";
+<div class="mb-6">
+<label class="font-semibold block mb-2">Observações</label>
+<textarea id="observacoes" rows="4"
+placeholder="Digite observações do pedido"
+class="w-full border rounded-xl p-3 outline-none"></textarea>
+</div>
 
-      let totalPedido = 0;
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<button onclick="compartilharWhatsApp()"
+class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl font-bold">
+Compartilhar WhatsApp
+</button>
 
-      pedidos.forEach((item, index) => {
+<button onclick="window.print()"
+class="bg-gray-800 hover:bg-gray-900 text-white p-4 rounded-2xl font-bold">
+Gerar PDF
+</button>
+</div>
 
-        totalPedido += item.total;
+</div>
 
-        tabela.innerHTML += `
-          <tr class="border-b">
-            <td class="p-2">${item.produto}</td>
-            <td class="p-2 text-center">${item.quantidade}</td>
-            <td class="p-2 text-right">
-              R$ ${item.valor.toFixed(2)}
-            </td>
-            <td class="p-2 text-right font-semibold">
-              R$ ${item.total.toFixed(2)}
-            </td>
-            <td class="p-2 text-center">
-              <button
-                onclick="removerProduto(${index})"
-                class="text-red-500 font-bold"
-              >
-                X
-              </button>
-            </td>
-          </tr>
-        `;
-      });
+<script>
+let pedidos = [];
 
-      document.getElementById("totalPedido").innerText =
-        `R$ ${totalPedido.toFixed(2)}`;
-    }
+function adicionarProduto() {
+  const codigoProduto = document.getElementById("codigoProduto").value;
+  const produto = document.getElementById("produto").value;
+  const quantidade = parseFloat(document.getElementById("quantidade").value);
+  const valor = parseFloat(document.getElementById("valor").value);
 
-    function removerProduto(index) {
-      pedidos.splice(index, 1);
-      atualizarTabela();
-    }
+  if (!produto || !quantidade || !valor) {
+    alert("Preencha todos os campos.");
+    return;
+  }
 
-    function compartilharWhatsApp() {
+  pedidos.push({
+    codigoProduto,
+    produto,
+    quantidade,
+    valor,
+    total: quantidade * valor
+  });
 
-      const cliente = document.getElementById("cliente").value;
+  atualizarTabela();
 
-      let mensagem = `*Pedido Fácil*%0A%0A`;
+  document.getElementById("codigoProduto").value = "";
+  document.getElementById("produto").value = "";
+  document.getElementById("quantidade").value = "";
+  document.getElementById("valor").value = "";
+}
 
-      mensagem += `Cliente: ${cliente}%0A%0A`;
+function atualizarTabela() {
+  const tabela = document.getElementById("tabelaPedidos");
+  tabela.innerHTML = "";
 
-      pedidos.forEach(item => {
+  let totalPedido = 0;
 
-        mensagem += `• ${item.produto} `;
-        mensagem += `(${item.quantidade}x) `;
-        mensagem += `R$ ${item.total.toFixed(2)}%0A`;
+  pedidos.forEach((item, index) => {
+    totalPedido += item.total;
 
-      });
+    tabela.innerHTML += `
+    <tr class="border-b">
+      <td class="p-2">${item.codigoProduto}</td>
+      <td class="p-2">${item.produto}</td>
+      <td class="p-2 text-center">${item.quantidade}</td>
+      <td class="p-2 text-right">R$ ${item.valor.toFixed(2)}</td>
+      <td class="p-2 text-right font-semibold">R$ ${item.total.toFixed(2)}</td>
+      <td class="p-2 text-center">
+        <button onclick="removerProduto(${index})" class="text-red-500 font-bold">X</button>
+      </td>
+    </tr>`;
+  });
 
-      const total = pedidos.reduce((acc, item) => acc + item.total, 0);
+  document.getElementById("totalPedido").innerText =
+    `R$ ${totalPedido.toFixed(2)}`;
+}
 
-      mensagem += `%0A*Total:* R$ ${total.toFixed(2)}`;
+function removerProduto(index) {
+  pedidos.splice(index, 1);
+  atualizarTabela();
+}
 
-      window.open(`https://wa.me/?text=${mensagem}`, "_blank");
-    }
+function compartilharWhatsApp() {
+  const numeroPedido = document.getElementById("numeroPedido").value;
+  const dataPedido = document.getElementById("dataPedido").value;
+  const codigoCliente = document.getElementById("codigoCliente").value;
+  const cliente = document.getElementById("cliente").value;
+  const observacoes = document.getElementById("observacoes").value;
 
-  </script>
+  let mensagem = `*Pedido Fácil*%0A%0A`;
+  mensagem += `Pedido: ${numeroPedido}%0A`;
+  mensagem += `Data: ${dataPedido}%0A`;
+  mensagem += `Cliente: ${cliente}%0A`;
+  mensagem += `Código Cliente: ${codigoCliente}%0A%0A`;
+
+  pedidos.forEach(item => {
+    mensagem += `${item.codigoProduto} - ${item.produto}`;
+    mensagem += ` (${item.quantidade}x)`;
+    mensagem += ` - R$ ${item.total.toFixed(2)}%0A`;
+  });
+
+  const total = pedidos.reduce((acc, item) => acc + item.total, 0);
+
+  mensagem += `%0AObservações:%0A${observacoes}%0A`;
+  mensagem += `%0A*Total:* R$ ${total.toFixed(2)}`;
+
+  window.open(`https://wa.me/?text=${mensagem}`, "_blank");
+}
+
+window.onload = () => {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth()+1).padStart(2,"0");
+  const dia = String(hoje.getDate()).padStart(2,"0");
+  document.getElementById("dataPedido").value = `${ano}-${mes}-${dia}`;
+};
+</script>
 
 </body>
 </html>
