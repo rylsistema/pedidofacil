@@ -1,6 +1,7 @@
 {
+  "id": "/",
   "name": "Ryl Pedidos",
-  "short_name": "Ryl Pedidos",
+  "short_name": "Ryl",
   "description": "Seu bloco digital de pedidos",
   "start_url": "/",
   "display": "standalone",
