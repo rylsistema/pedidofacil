@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a8a">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RylPEDIDOS</title>
+<title>RYL Pedidos</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 body{background:#f3f4f6}
@@ -14,7 +16,7 @@ body{background:#f3f4f6}
 
 <div class="w-full max-w-4xl bg-white rounded-3xl p-6 card">
 
-<h1 class="text-3xl font-bold text-center mb-2">rylPEDIDOS</h1>
+<h1 class="text-3xl font-bold text-center mb-2">RYL Pedidos</h1>
 <p class="text-center text-gray-500 mb-6">Seu bloco de pedido digital</p>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
@@ -205,6 +207,13 @@ window.onload = () => {
   const dia = String(hoje.getDate()).padStart(2,"0");
   document.getElementById("dataPedido").value = `${ano}-${mes}-${dia}`;
 };
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("service-worker.js")
+    .then(() => {
+      console.log("Service Worker registrado");
+    });
+}
 </script>
 
 </body>
