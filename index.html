@@ -7,6 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flash Pedidos</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 body{background:#f3f4f6}
 .card{box-shadow:0 10px 25px rgba(0,0,0,.08)}
@@ -104,7 +106,7 @@ class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl font-bold">
 Compartilhar WhatsApp
 </button>
 
-<button onclick="window.print()"
+<button onclick="gerarPDF()"
 class="bg-gray-800 hover:bg-gray-900 text-white p-4 rounded-2xl font-bold">
 Gerar PDF
 </button>
@@ -195,21 +197,25 @@ function atualizarTabela() {
 
   let totalPedido = 0;
 
-  pedidos.forEach((item, index) => {
-    totalPedido += item.total;
+pedidos.forEach((item, index) => {
 
-    tabela.innerHTML += `
+  totalPedido += item.total;
+
+  const valorFormatado = item.total.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  tabela.innerHTML += `
     <tr class="border-b">
       <td class="p-2">${item.codigoProduto}</td>
       <td class="p-2">${item.produto}</td>
       <td class="p-2 text-center">${item.quantidade}</td>
-      <td class="p-2 text-right">R$ ${item.valor.toFixed(2)}</td>
-      <td class="p-2 text-right font-semibold">R$ ${item.total.toFixed(2)}</td>
-      <td class="p-2 text-center">
-        <button onclick="removerProduto(${index})" class="text-red-500 font-bold">X</button>
-      </td>
-    </tr>`;
-  });
+      <td class="p-2 text-right">R$ ${valorFormatado}</td>
+    </tr>
+  `;
+
+});
 
   document.getElementById("totalPedido").innerText =
     `R$ ${totalPedido.toFixed(2)}`;
@@ -249,6 +255,136 @@ function compartilharWhatsApp() {
   mensagem += `%0A*Total:* R$ ${total.toFixed(2)}`;
 
   window.open(`https://wa.me/?text=${mensagem}`, "_blank");
+}
+
+async function gerarPDF() {
+
+  const { jsPDF } = window.jspdf;
+
+  const pdf = new jsPDF();
+
+  const numeroPedido =
+    document.getElementById("numeroPedido").value;
+
+  const dataOriginal =
+document.getElementById("dataPedido").value;
+
+const dataPedido =
+dataOriginal.split("-").reverse().join("/");
+
+  const codigoCliente =
+    document.getElementById("codigoCliente").value;
+
+  const cliente =
+    document.getElementById("cliente").value;
+
+  const observacoes =
+    document.getElementById("observacoes").value;
+
+  pdf.setFontSize(18);
+  pdf.text("FLASH PEDIDOS", 20, 20);
+
+  pdf.setFontSize(11);
+
+  pdf.text(`Pedido: ${numeroPedido}`, 20, 35);
+  pdf.text(`Data: ${dataPedido}`, 20, 42);
+
+  pdf.text(
+    `Cliente: ${codigoCliente} - ${cliente}`,
+    20,
+    50
+  );
+  pdf.line(20, 55, 190, 55);
+
+  let linha = 70;
+
+  pdf.text("Código", 20, linha);
+  pdf.text("Produto", 50, linha);
+  pdf.text("Qtd", 130, linha);
+  pdf.text("Total", 160, linha);
+
+  linha += 8;
+
+  let totalPedido = 0;
+
+  pedidos.forEach(item => {
+
+    pdf.text(
+      item.codigoProduto || "",
+      20,
+      linha
+    );
+
+    pdf.text(
+      item.produto,
+      50,
+      linha
+    );
+
+    pdf.text(
+      String(item.quantidade),
+      130,
+      linha
+    );
+
+    pdf.text(
+      `R$ ${item.total.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`,
+      160,
+      linha
+    );
+
+    totalPedido += item.total;
+
+    linha += 8;
+  });
+  // Linha separadora antes do total
+pdf.line(20, linha, 190, linha);
+
+linha += 10;
+
+pdf.setFontSize(12);
+
+pdf.setFontSize(14);
+
+pdf.text(
+  `TOTAL DO PEDIDO: R$ ${totalPedido.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`,
+  20,
+  linha
+);
+
+  linha += 15;
+
+  pdf.setFontSize(12);
+
+pdf.text(
+  "Observações",
+  20,
+  linha
+);
+
+linha += 5;
+
+// Caixa de observações
+pdf.rect(20, linha, 170, 30);
+
+pdf.setFontSize(10);
+
+pdf.text(
+  observacoes || "Sem observações",
+  25,
+  linha + 10
+);
+
+  pdf.save(
+    `Pedido_${numeroPedido || "SemNumero"}.pdf`
+  );
+
 }
 
 window.onload = () => {
