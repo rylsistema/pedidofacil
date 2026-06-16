@@ -115,6 +115,52 @@ Gerar PDF
 <script>
 let pedidos = [];
 
+function carregarDados() {
+
+  const dadosSalvos =
+    localStorage.getItem("flashPedidos");
+
+  if (!dadosSalvos) return;
+
+  const dados = JSON.parse(dadosSalvos);
+
+  pedidos = dados.pedidos || [];
+
+  document.getElementById("numeroPedido").value =
+    dados.numeroPedido || "";
+
+  document.getElementById("dataPedido").value =
+    dados.dataPedido || "";
+
+  document.getElementById("codigoCliente").value =
+    dados.codigoCliente || "";
+
+  document.getElementById("cliente").value =
+    dados.cliente || "";
+
+  document.getElementById("observacoes").value =
+    dados.observacoes || "";
+
+  atualizarTabela();
+}
+
+function salvarDados() {
+
+  const dados = {
+    pedidos,
+    numeroPedido: document.getElementById("numeroPedido").value,
+    dataPedido: document.getElementById("dataPedido").value,
+    codigoCliente: document.getElementById("codigoCliente").value,
+    cliente: document.getElementById("cliente").value,
+    observacoes: document.getElementById("observacoes").value
+  };
+
+  localStorage.setItem(
+    "flashPedidos",
+    JSON.stringify(dados)
+  );
+}
+
 function adicionarProduto() {
   const codigoProduto = document.getElementById("codigoProduto").value;
   const produto = document.getElementById("produto").value;
@@ -135,6 +181,7 @@ function adicionarProduto() {
   });
 
   atualizarTabela();
+  salvarDados();
 
   document.getElementById("codigoProduto").value = "";
   document.getElementById("produto").value = "";
@@ -169,8 +216,12 @@ function atualizarTabela() {
 }
 
 function removerProduto(index) {
+    if (!confirm("Deseja excluir este item?")) {
+    return;
+  }
   pedidos.splice(index, 1);
   atualizarTabela();
+  salvarDados();
 }
 
 function compartilharWhatsApp() {
@@ -201,11 +252,38 @@ function compartilharWhatsApp() {
 }
 
 window.onload = () => {
+
   const hoje = new Date();
+
+  const dia =
+    String(hoje.getDate()).padStart(2, "0"); 
+
+  const mes =
+    String(hoje.getMonth() + 1).padStart(2, "0");
+
   const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth()+1).padStart(2,"0");
-  const dia = String(hoje.getDate()).padStart(2,"0");
-  document.getElementById("dataPedido").value = `${ano}-${mes}-${dia}`;
+
+  // Só define a data se não existir pedido salvo
+  if (!localStorage.getItem("flashPedidos")) {
+
+    document.getElementById("dataPedido").value =
+      `${ano}-${mes}-${dia}`;
+
+  }
+
+  carregarDados();
+
+  document
+    .querySelectorAll("input, textarea")
+    .forEach(campo => {
+
+      campo.addEventListener(
+        "input",
+        salvarDados
+      );
+
+    });
+
 };
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
