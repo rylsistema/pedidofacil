@@ -100,17 +100,28 @@ placeholder="Digite observações do pedido"
 class="w-full border rounded-xl p-3 outline-none"></textarea>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-<button onclick="compartilharWhatsApp()"
-class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl font-bold">
-Compartilhar WhatsApp
-</button>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-<button onclick="gerarPDF()"
-class="bg-gray-800 hover:bg-gray-900 text-white p-4 rounded-2xl font-bold">
-Gerar PDF
-</button>
-</div>
+  <button
+    onclick="novoPedido()"
+    class="bg-red-500 hover:bg-red-600 text-white p-4 rounded-2xl font-bold"
+  >
+    🗑 Novo Pedido
+  </button>
+
+  <button
+    onclick="compartilharWhatsApp()"
+    class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl font-bold"
+  >
+    Compartilhar WhatsApp
+  </button>
+
+  <button
+    onclick="gerarPDF()"
+    class="bg-gray-800 hover:bg-gray-900 text-white p-4 rounded-2xl font-bold"
+  >
+    Gerar PDF
+  </button>
 
 </div>
 
@@ -384,6 +395,25 @@ pdf.text(
   pdf.save(
     `Pedido_${numeroPedido || "SemNumero"}.pdf`
   );
+
+function novoPedido() {
+
+  if (!confirm("Deseja iniciar um novo pedido?")) {
+    return;
+  }
+
+  localStorage.removeItem("flashPedidos");
+
+  pedidos = [];
+
+  document.getElementById("numeroPedido").value = "";
+  document.getElementById("codigoCliente").value = "";
+  document.getElementById("cliente").value = "";
+  document.getElementById("observacoes").value = "";
+
+  atualizarTabela();
+
+  location.reload();
 
 }
 
