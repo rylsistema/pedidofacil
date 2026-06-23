@@ -304,60 +304,143 @@ dataOriginal.split("-").reverse().join("/");
   const observacoes =
     document.getElementById("observacoes").value;
 
-  pdf.setFontSize(18);
-  pdf.text("FLASH PEDIDOS", 20, 20);
+  // Carregar logo
+const img = new Image();
 
-  pdf.setFontSize(11);
+img.src = "images/logo-header.png";
 
-  pdf.text(`Pedido: ${numeroPedido}`, 20, 35);
-  pdf.text(`Data: ${dataPedido}`, 20, 42);
+await new Promise((resolve) => {
+  img.onload = resolve;
+  img.onerror = resolve;
+});
 
-  pdf.text(
-    `Cliente: ${codigoCliente} - ${cliente}`,
-    20,
-    50
-  );
-  pdf.line(20, 55, 190, 55);
+// Centralizar logo
+const logoWidth = 45;
+const logoHeight = 28;
 
-  let linha = 70;
+const pageWidth =
+  pdf.internal.pageSize.getWidth();
 
-  pdf.text("Código", 20, linha);
-  pdf.text("Produto", 50, linha);
-  pdf.text("Qtd", 130, linha);
-  pdf.text("Total", 160, linha);
+const logoX =
+  (pageWidth - logoWidth) / 2;
 
-  linha += 8;
+pdf.addImage(
+  img,
+  "PNG",
+  logoX,
+  8,
+  logoWidth,
+  logoHeight
+);
+
+// Slogan
+pdf.setFontSize(10);
+
+pdf.setTextColor(100, 100, 100);
+
+pdf.text(
+  "Pedidos rápidos, simples e profissionais",
+  pageWidth / 2,
+  42,
+  { align: "center" }
+);
+
+pdf.line(
+  40,
+  48,
+  170,
+  48
+);
+
+pdf.setTextColor(0, 0, 0);
+
+// Dados do pedido
+pdf.setFontSize(11);
+// Pedido
+pdf.setFont("helvetica", "bold");
+pdf.text("Pedido:", 20, 55);
+
+pdf.setFont("helvetica", "normal");
+pdf.text(`${numeroPedido}`, 45, 55);
+
+// Data
+pdf.setFont("helvetica", "bold");
+pdf.text("Data:", 140, 55);
+
+pdf.setFont("helvetica", "normal");
+pdf.text(`${dataPedido}`, 160, 55);
+
+// Cliente
+pdf.setFont("helvetica", "bold");
+pdf.text("Cliente:", 20, 65);
+
+pdf.setFont("helvetica", "normal");
+pdf.text(
+  `${codigoCliente} - ${cliente}`,
+  50,
+  65
+);
+
+
+let linha = 85;
+
+  // Linha superior
+pdf.line(20, linha - 5, 190, linha - 5);
+
+pdf.setFont("helvetica", "bold");
+
+pdf.text("Cód.", 20, linha);
+pdf.text("Produto", 50, linha);
+pdf.text("Qtd", 130, linha);
+pdf.text("Preço", 155, linha);
+pdf.text("Total", 180, linha);
+
+// Linha inferior
+pdf.line(20, linha + 3, 190, linha + 3);
+
+pdf.setFont("helvetica", "normal");
+
+linha += 12;
 
   let totalPedido = 0;
 
   pedidos.forEach(item => {
 
     pdf.text(
-      item.codigoProduto || "",
-      20,
-      linha
-    );
+  item.codigoProduto || "",
+  20,
+  linha
+);
 
-    pdf.text(
-      item.produto,
-      50,
-      linha
-    );
+pdf.text(
+  item.produto,
+  50,
+  linha
+);
 
-    pdf.text(
-      String(item.quantidade),
-      130,
-      linha
-    );
+pdf.text(
+  String(item.quantidade),
+  130,
+  linha
+);
 
-    pdf.text(
-      `R$ ${item.total.toLocaleString('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}`,
-      160,
-      linha
-    );
+pdf.text(
+  `R$ ${item.valor.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`,
+  155,
+  linha
+);
+
+pdf.text(
+  `R$ ${item.total.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`,
+  180,
+  linha
+);
 
     totalPedido += item.total;
 
@@ -366,43 +449,78 @@ dataOriginal.split("-").reverse().join("/");
   // Linha separadora antes do total
 pdf.line(20, linha, 190, linha);
 
-linha += 10;
+linha += 12;
 
-pdf.setFontSize(12);
-
-pdf.setFontSize(14);
-
-pdf.text(
-  `TOTAL DO PEDIDO: R$ ${totalPedido.toLocaleString('pt-BR', {
+const totalFormatado =
+  totalPedido.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  })}`,
-  20,
-  linha
+  });
+
+// Caixa arredondada
+pdf.roundedRect(
+  130,
+  linha,
+  60,
+  30,
+  3,
+  3
 );
 
-  linha += 15;
+pdf.setFont("helvetica", "bold");
 
-  pdf.setFontSize(12);
+pdf.setFontSize(10);
 
 pdf.text(
-  "Observações",
+  "TOTAL DO PEDIDO",
+  162,
+  linha + 10,
+  { align: "center" }
+);
+
+pdf.setFontSize(16);
+
+pdf.text(
+  `R$ ${totalFormatado}`,
+  162,
+  linha + 22,
+  { align: "center" }
+);
+
+pdf.setFontSize(11);
+
+linha += 40;
+
+pdf.setFont("helvetica", "bold");
+
+pdf.text(
+  "Observações:",
   20,
   linha
 );
+
+pdf.setFont("helvetica", "normal");
 
 linha += 5;
 
-// Caixa de observações
-pdf.rect(20, linha, 170, 30);
-
-pdf.setFontSize(10);
+// Caixa das observações
+pdf.roundedRect(
+  20,
+  linha,
+  170,
+  30,
+  2,
+  2
+);
 
 pdf.text(
   observacoes || "Sem observações",
   25,
   linha + 10
 );
+
+pdf.setFontSize(10);
+
 
   pdf.save(
     `Pedido_${numeroPedido || "SemNumero"}.pdf`
