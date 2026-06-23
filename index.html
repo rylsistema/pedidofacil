@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flash Pedidos</title>
+<link rel="icon" type="image/png" href="icons/favicon-32.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -18,8 +19,19 @@ body{background:#f3f4f6}
 
 <div class="w-full max-w-4xl bg-white rounded-3xl p-6 card">
 
-<h1 class="text-3xl font-bold text-center mb-2">Flash Pedidos</h1>
-<p class="text-center text-gray-500 mb-6">Pedidos rápidos, simples e profissionais</p>
+<div class="text-center mb-4">
+
+  <img
+    src="images/logo-header.png"
+    alt="Flash Pedidos"
+    class="h-28 mx-auto mb-4"
+  >
+
+  <p class="text-gray-500">
+    Pedidos rápidos, simples e profissionais
+  </p>
+
+</div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
   <div>
@@ -88,7 +100,7 @@ body{background:#f3f4f6}
 
 <div class="flex justify-end mb-6">
 <div class="bg-gray-100 rounded-2xl px-6 py-4">
-<p class="text-gray-500 text-sm">Total do Pedido</p>
+<p class="text-gray-500 text-sm">TOTAL DO PEDIDO</p>
 <h2 id="totalPedido" class="text-3xl font-bold">R$ 0,00</h2>
 </div>
 </div>
@@ -106,7 +118,7 @@ class="w-full border rounded-xl p-3 outline-none"></textarea>
     onclick="novoPedido()"
     class="bg-red-500 hover:bg-red-600 text-white p-4 rounded-2xl font-bold"
   >
-    🗑 Novo Pedido
+    🆕 Novo Pedido
   </button>
 
   <button
@@ -395,6 +407,8 @@ pdf.text(
   pdf.save(
     `Pedido_${numeroPedido || "SemNumero"}.pdf`
   );
+
+}
 
 function novoPedido() {
 
